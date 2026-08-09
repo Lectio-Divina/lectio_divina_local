@@ -201,4 +201,31 @@ input[type="range"] { width:100%; accent-color:#78716c; margin-top:10px; }
   padding-top: env(safe-area-inset-top);
   padding-bottom: env(safe-area-inset-bottom);
 }
+
+  /* Global iOS safe-area support for all PWA screens */
+@supports (padding: env(safe-area-inset-top)) {
+
+  .app-shell,
+  .journal,
+  .settings,
+  .page,
+  .screen,
+  .panel {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    box-sizing: border-box;
+  }
+
+}
+  /* Prevent full-screen pages from hiding under Dynamic Island */
+@media (max-width: 699px) {
+
+  .app-shell,
+  #root {
+    min-height: 100dvh;
+    height: 100dvh;
+    overflow: hidden;
+  }
+
+}
 }
