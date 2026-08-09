@@ -171,11 +171,11 @@ input[type="range"] { width:100%; accent-color:#78716c; margin-top:10px; }
     }
   
   .timer {
-    width: 250px;
-    height: 250px;
+    width: 270px;
+    height: 270px;
     flex-basis: 175px;
-    margin-top: 30px;
-    margin-bottom: 30px;
+    margin-top: 50px;
+    margin-bottom: 50px;
   }
 
   .time {
@@ -236,10 +236,10 @@ input[type="range"] { width:100%; accent-color:#78716c; margin-top:10px; }
   }
 
   .timer {
-    width: 250px;
-    height: 250px;
-    margin-top: 30px;
-    margin-bottom: 30px;
+    width: 270px;
+    height: 270px;
+    margin-top: 50px;
+    margin-bottom: 50px;
   }
 
 }
