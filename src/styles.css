@@ -193,7 +193,7 @@ input[type="range"] { width:100%; accent-color:#78716c; margin-top:10px; }
   .stage-dots {
     height: 30px;
     flex: 0 0 30px;
-    margin-top: 12px;
+    margin-top: 40px;
   }
   /* iOS safe area support */
   .app-shell {
