@@ -128,7 +128,7 @@ input[type="range"] { width:100%; accent-color:#78716c; margin-top:10px; }
   .app-shell { min-height: 100vh; box-shadow:0 0 40px rgba(0,0,0,.04); }
 }
 /* Compact mobile layout */
-@media (max-width: 699px) and (max-height: 800px) {
+@media (max-width: 699px) and (max-height: 900px) {
   .app-shell {
     padding-top: calc(10px + env(safe-area-inset-top));
     padding-right: 18px;
