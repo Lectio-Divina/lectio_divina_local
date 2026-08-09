@@ -167,13 +167,13 @@ input[type="range"] { width:100%; accent-color:#78716c; margin-top:10px; }
       margin: 4px 0 0;
     }
   
-  .timer {
-    width: 400px;
-    height: 270px;
-    flex-basis: 175px;
-    margin-top: 50px;
-    margin-bottom: 50px;
-  }
+  /.timer {
+  /  width: 270px;
+   / height: 270px;
+  /  flex-basis: 175px;
+  /  margin-top: 50px;
+   / margin-bottom: 50px;
+ / }
 
   .time {
     font-size: 58px;
@@ -228,11 +228,11 @@ input[type="range"] { width:100%; accent-color:#78716c; margin-top:10px; }
     gap: 8px;
   }
 
-  .timer {
-    width: 270px;
-    height: 270px;
-    margin-top: 50px;
-    margin-bottom: 50px;
-  }
+ / .timer {
+  /  width: 270px;
+  /  height: 270px;
+  /  margin-top: 50px;
+  /  margin-bottom: 50px;
+ / }
 
 }
