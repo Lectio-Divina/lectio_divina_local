@@ -171,8 +171,8 @@ input[type="range"] { width:100%; accent-color:#78716c; margin-top:10px; }
     }
   
   .timer {
-    width: 175px;
-    height: 175px;
+    width: 250px;
+    height: 250px;
     flex-basis: 175px;
     margin-top: 10px;
     margin-bottom: 10px;
@@ -236,8 +236,8 @@ input[type="range"] { width:100%; accent-color:#78716c; margin-top:10px; }
   }
 
   .timer {
-    width: 220px;
-    height: 220px;
+    width: 250px;
+    height: 250px;
   }
 
 }
