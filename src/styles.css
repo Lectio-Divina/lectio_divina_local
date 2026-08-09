@@ -136,10 +136,10 @@ input[type="range"] { width:100%; accent-color:#78716c; margin-top:10px; }
     padding-left: 18px;
   }
   
-  .header {
-    height: 36px;
-    flex-basis: 36px;
-  }
+  /.header {
+ /   height: 64px;
+ /   flex-basis: 64px;
+ / }
 
   .main {
     
