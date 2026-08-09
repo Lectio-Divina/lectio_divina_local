@@ -142,10 +142,9 @@ input[type="range"] { width:100%; accent-color:#78716c; margin-top:10px; }
   }
 
   .main {
-    justify-content: flex-start;
+    
     align-items: center;
     padding: 4px 0 0;
-    gap: 0px;
     height: auto;
     flex: 1 1 auto;
     overflow: hidden;
@@ -228,4 +227,17 @@ input[type="range"] { width:100%; accent-color:#78716c; margin-top:10px; }
   }
 
 }
+}
+@media (max-width: 699px) {
+
+  .main {
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .timer {
+    width: 220px;
+    height: 220px;
+  }
+
 }
