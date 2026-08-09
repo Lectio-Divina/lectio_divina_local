@@ -37,7 +37,7 @@ a { color: inherit; }
   box-sizing: border-box;
 }
 :root[data-theme="dark"] .app-shell { background:#1c1a19; color:#e7e5e4; }
-.header { height: 48px; flex: 0 0 48px; display:flex; justify-content:space-between; align-items:center; }
+.header { height: 64px; flex: 0 0 64px; display:flex; justify-content:space-between; align-items:center; }
 .icon-button { position:relative; border:0; background:transparent; color:#a8a29e; padding:8px; }
 .icon-button:hover { color:#57534e; }
 :root[data-theme="dark"] .icon-button:hover { color:#e7e5e4; }
