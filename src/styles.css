@@ -113,11 +113,12 @@ input[type="range"] { width:100%; accent-color:#78716c; margin-top:10px; }
 /* Compact mobile layout */
 @media (max-width: 699px) and (max-height: 800px) {
   .app-shell {
-    padding: 10px 18px 6px;
-    padding-top: 6px;
-    padding-bottom: 4px;
+    padding-top: calc(10px + env(safe-area-inset-top));
+    padding-right: 18px;
+    padding-bottom: calc(6px + env(safe-area-inset-bottom));
+    padding-left: 18px;
   }
-
+  
   .header {
     height: 36px;
     flex-basis: 36px;
@@ -164,4 +165,9 @@ input[type="range"] { width:100%; accent-color:#78716c; margin-top:10px; }
     height: 30px;
     flex: 0 0 30px;
   }
+  /* iOS safe area support */
+  .app-shell {
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+}
 }
