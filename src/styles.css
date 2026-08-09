@@ -127,10 +127,12 @@ input[type="range"] { width:100%; accent-color:#78716c; margin-top:10px; }
 
   .main {
     justify-content: flex-start;
-    padding: 8px 0 0;
+    align-items: center;
+    padding: 4px 0 0;
     gap: 4px;
-    min-height: auto;
-    flex: 0 1 auto;
+    height: auto;
+    flex: 1 1 auto;
+    overflow: hidden;
   }
   
   .stage-dots {
