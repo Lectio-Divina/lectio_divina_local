@@ -129,7 +129,7 @@ input[type="range"] { width:100%; accent-color:#78716c; margin-top:10px; }
     justify-content: flex-start;
     align-items: center;
     padding: 4px 0 0;
-    gap: 4px;
+    gap: 0px;
     height: auto;
     flex: 1 1 auto;
     overflow: hidden;
@@ -140,18 +140,27 @@ input[type="range"] { width:100%; accent-color:#78716c; margin-top:10px; }
   }
   
   .stage-heading {
-    height: 48px;
-    flex-basis: 48px;
+    margin-bottom: 0;
+    height: 40px;
+    flex-basis: 40px;
   }
 
   .stage-heading h2 {
     font-size: 22px;
+    margin: 0;
+    line-height: 1;
   }
 
+   .stage-heading p {
+      margin: 4px 0 0;
+    }
+  
   .timer {
-    width: 190px;
-    height: 190px;
-    flex-basis: 190px;
+    width: 175px;
+    height: 175px;
+    flex-basis: 175px;
+    margin-top: 10px;
+    margin-bottom: 10px;
   }
 
   .time {
@@ -159,14 +168,17 @@ input[type="range"] { width:100%; accent-color:#78716c; margin-top:10px; }
   }
 
   .controls {
-    height: 44px;
     flex: 0 0 44px;
     gap: 52px;
+    margin-top: 0;
+    height: 34px;
+    flex-basis: 34px;
   }
 
   .stage-dots {
     height: 30px;
     flex: 0 0 30px;
+    margin-top: 12px;
   }
   /* iOS safe area support */
   .app-shell {
