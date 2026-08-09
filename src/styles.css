@@ -57,7 +57,7 @@ a { color: inherit; }
 .timer { position:relative; width:256px; height:256px; flex:0 0 256px; border:0; background:transparent; display:flex; align-items:center; justify-content:center; flex-direction:column; border-radius:50%; color:#57534e; }
 .timer:active { transform:scale(.97); }
 .progress-ring { position:absolute; inset:0; width:100%; height:100%; transform:rotate(-90deg); pointer-events:none; }
-.ring-bg, .ring-progress { fill:none; stroke-width:2.5; }
+.ring-bg, .ring-progress { fill:none; stroke-width:4; }
 .ring-bg { stroke:#f5f3f0; }
 .ring-progress { stroke:#d6d3d1; stroke-linecap:round; transition:stroke-dashoffset 1s linear; }
 :root[data-theme="dark"] .ring-bg { stroke:#292524; }
@@ -167,14 +167,6 @@ input[type="range"] { width:100%; accent-color:#78716c; margin-top:10px; }
       margin: 4px 0 0;
     }
   
-  /.timer {
-  /  width: 270px;
-   / height: 270px;
-  /  flex-basis: 175px;
-  /  margin-top: 50px;
-   / margin-bottom: 50px;
- / }
-
   .time {
     font-size: 58px;
   }
@@ -227,12 +219,5 @@ input[type="range"] { width:100%; accent-color:#78716c; margin-top:10px; }
     justify-content: center;
     gap: 8px;
   }
-
- / .timer {
-  /  width: 270px;
-  /  height: 270px;
-  /  margin-top: 50px;
-  /  margin-bottom: 50px;
- / }
 
 }
