@@ -110,3 +110,50 @@ input[type="range"] { width:100%; accent-color:#78716c; margin-top:10px; }
 @media (min-width: 700px) {
   .app-shell { min-height: 100vh; box-shadow:0 0 40px rgba(0,0,0,.04); }
 }
+/* Compact mobile layout */
+@media (max-width: 699px) {
+  .app-shell {
+    padding: 10px 18px 6px;
+  }
+
+  .header {
+    height: 44px;
+    flex: 0 0 44px;
+  }
+
+  .main {
+    justify-content: flex-start;
+    padding: 8px 0 0;
+    gap: 8px;
+  }
+
+  .stage-heading {
+    height: 64px;
+    flex: 0 0 64px;
+  }
+
+  .stage-heading h2 {
+    font-size: 26px;
+  }
+
+  .timer {
+    width: 224px;
+    height: 224px;
+    flex-basis: 224px;
+  }
+
+  .time {
+    font-size: 58px;
+  }
+
+  .controls {
+    height: 44px;
+    flex: 0 0 44px;
+    gap: 52px;
+  }
+
+  .stage-dots {
+    height: 30px;
+    flex: 0 0 30px;
+  }
+}
