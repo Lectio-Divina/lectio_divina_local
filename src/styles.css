@@ -217,7 +217,7 @@ input[type="range"] { width:100%; accent-color:#78716c; margin-top:10px; }
 
   .main {
     justify-content: center;
-    gap: 8px;
+    gap: 9px;
   }
 
 }
