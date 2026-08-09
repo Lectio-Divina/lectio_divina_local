@@ -150,9 +150,9 @@ input[type="range"] { width:100%; accent-color:#78716c; margin-top:10px; }
     overflow: hidden;
   }
   
-  .stage-dots {
-  margin-top: 8px;
-  }
+ / .stage-dots {
+ / margin-top: 8px;
+ / }
   
   .stage-heading {
     margin-bottom: 10px;
@@ -190,10 +190,10 @@ input[type="range"] { width:100%; accent-color:#78716c; margin-top:10px; }
     flex-basis: 34px;
   }
 
-  .stage-dots {
-    height: 30px;
-    flex: 0 0 30px;
-    margin-top: 40px;
+ / .stage-dots {
+  /  height: 30px;
+  /  flex: 0 0 30px;
+  /  margin-top: 40px;
   }
   /* iOS safe area support */
   .app-shell {
