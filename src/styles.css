@@ -42,7 +42,7 @@ a { color: inherit; }
 .icon-button:hover { color:#57534e; }
 :root[data-theme="dark"] .icon-button:hover { color:#e7e5e4; }
 .journal-dot { position:absolute; top:7px; right:7px; width:7px; height:7px; background:#d97706; border-radius:50%; }
-.title-area { display:flex; flex-direction:column; align-items:center; }
+.title-area { display:flex; flex-direction:column; align-items:center; transform: translateY(7px); }
 .title-area h1 { margin:0; font: 500 24px Georgia, serif; letter-spacing:.20em; text-transform:uppercase; color:#d6d3d1; }
 .reading-link { display:flex; align-items:center; gap:6px; margin-top:5px; padding:3px 8px; border-radius:7px; background:#f5f5f4; color:#78716c; font-size:14px; letter-spacing:.14em; text-decoration:none; max-width:300px; overflow:hidden; white-space:nowrap; }
 .reading-link span { overflow:hidden; text-overflow:ellipsis; }
