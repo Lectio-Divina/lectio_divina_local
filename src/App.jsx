@@ -213,10 +213,19 @@ export default function App() {
     }
   }, [timeLeft, isActive, currentStageIndex, durations, playBell]);
 
-  const toggleTimer = () => {
-    if (!isActive && audioContextRef.current?.state === "suspended") audioContextRef.current.resume();
-    setIsActive(v => !v);
-  };
+const toggleTimer = () => {
+  if (!isActive) {
+    if (!audioContextRef.current) {
+      audioContextRef.current = new (window.AudioContext || window.webkitAudioContext)();
+    }
+
+    if (audioContextRef.current.state === "suspended") {
+      audioContextRef.current.resume();
+    }
+  }
+
+  setIsActive(v => !v);
+};
 
   const handleReset = () => {
     setIsActive(false);
