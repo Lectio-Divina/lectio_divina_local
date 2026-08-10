@@ -340,7 +340,7 @@ const toggleTimer = () => {
         </div>
       </main>
 
-     <footer className="main-footer">
+<footer className="main-footer">
   <div className="stage-dots">
     {STAGES.map((_, i) => (
       <div
@@ -351,7 +351,7 @@ const toggleTimer = () => {
   </div>
 
   <div className="copyright-notice">
-    © 2026 Lectio Divina · CC BY-NC Support: octave.resolve.0g@icloud.com
+    © 2026 Lectio Divina · CC BY-NC
   </div>
 </footer>
 
