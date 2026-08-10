@@ -222,3 +222,8 @@ input[type="range"] { width:100%; accent-color:#78716c; margin-top:10px; }
   }
 
 }
+@media (orientation: landscape) {
+  .app-shell {
+    transform: none;
+  }
+}
