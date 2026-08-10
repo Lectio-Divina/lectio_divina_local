@@ -431,7 +431,27 @@ const toggleTimer = () => {
                   if (stage.id === currentStage.id && !isActive) setTimeLeft(val * 60);
                 }}/>
               </div>)}
+<div className="install-card">
+  <h3>Install This App</h3>
 
+  <p>
+    Add Lectio Divina to your home screen for a faster, app-like experience.
+  </p>
+
+  <strong>iPhone / iPad</strong>
+  <p>
+    Tap the Share button
+    <br />
+    then choose <b>Add to Home Screen</b>.
+  </p>
+
+  <strong>Android</strong>
+  <p>
+    Tap the browser menu
+    <br />
+    then choose <b>Install App</b> or <b>Add to Home Screen</b>.
+  </p>
+</div>
               <p className="storage-note">Your settings and journal are stored only in this browser using local storage. No Firebase account or cloud database is used.</p>
             </div>
           </div>
