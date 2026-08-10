@@ -57,7 +57,7 @@ a { color: inherit; }
 .timer { position:relative; width:256px; height:256px; flex:0 0 256px; border:0; background:transparent; display:flex; align-items:center; justify-content:center; flex-direction:column; border-radius:50%; color:#57534e; }
 .timer:active { transform:scale(.97); }
 .progress-ring { position:absolute; inset:0; width:100%; height:100%; transform:rotate(-90deg); pointer-events:none; }
-.ring-bg, .ring-progress { fill:none; stroke-width:4; }
+.ring-bg, .ring-progress { fill:none; stroke-width:8; }
 .ring-bg { stroke:#f5f3f0; }
 .ring-progress { stroke:#d6d3d1; stroke-linecap:round; transition:stroke-dashoffset 1s linear; }
 :root[data-theme="dark"] .ring-bg { stroke:#292524; }
