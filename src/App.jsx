@@ -462,6 +462,11 @@ const toggleTimer = () => {
     <br />
     then choose <b>Install App</b> or <b>Add to Home Screen</b>.
   </p>
+    <p>
+    
+    <br />
+    Support: <b>octave.resolve.0g@icloud.com</b>
+  </p>
 </div>
               <p className="storage-note">Your settings and journal are stored only in this browser using local storage. No Firebase account or cloud database is used.</p>
             </div>
