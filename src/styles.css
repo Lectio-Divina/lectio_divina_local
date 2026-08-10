@@ -291,10 +291,3 @@ input[type="range"] { width:100%; accent-color:#78716c; margin-top:10px; }
     height: 50px;
   }
 }
-
-@media (min-width: 700px) {
-  .app-shell {
-    background: red !important;
-    max-width: 1000px !important;
-  }
-}
