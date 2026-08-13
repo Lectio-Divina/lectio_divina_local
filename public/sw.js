@@ -1,4 +1,4 @@
-const CACHE_NAME = "lectio-divina-v4";
+const CACHE_NAME = "lectio-divina-v1";
 
 const APP_SHELL = [
   "./",
@@ -17,8 +17,7 @@ self.addEventListener("install", (event) => {
     })
   );
 
-  // Do NOT call skipWaiting() here.
-  // This allows the current app session to continue uninterrupted.
+  self.skipWaiting();
 });
 
 self.addEventListener("activate", (event) => {
@@ -33,12 +32,6 @@ self.addEventListener("activate", (event) => {
   );
 
   self.clients.claim();
-});
-
-self.addEventListener("message", (event) => {
-  if (event.data && event.data.type === "SKIP_WAITING") {
-    self.skipWaiting();
-  }
 });
 
 self.addEventListener("fetch", (event) => {
