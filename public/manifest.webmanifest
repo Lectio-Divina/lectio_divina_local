@@ -4,9 +4,10 @@
   "description": "A quiet prayer companion for practicing Lectio Divina.",
   "start_url": "./",
   "display": "standalone",
-  "orientation": "portrait",
+  "orientation": "portrait"
   "background_color": "#ffffff",
   "theme_color": "#ffffff",
+  "orientation": "portrait-primary",
   "icons": [
     {
       "src": "./icon-192.png",
