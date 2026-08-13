@@ -212,9 +212,12 @@ export default function App() {
   const [showExportModal, setShowExportModal] = useState(false);
   const [exportedText, setExportedText] = useState("");
   const [copyStatus, setCopyStatus] = useState(false);
-  const [darkMode, setDarkMode] = useState(Boolean(savedSettings.darkMode));
+  const [darkMode, setDarkMode] = useState(
+    Boolean(savedSettings.darkMode)
+  );
   const [todayReading, setTodayReading] = useState(null);
-  const [loadingStatus, setLoadingStatus] = useState("Initializing...");
+  const [loadingStatus, setLoadingStatus] =
+    useState("Initializing...");
 
   const [journalEntries, setJournalEntries] = useState(() =>
     readStorage(STORAGE_KEYS.journal, [])
@@ -224,7 +227,8 @@ export default function App() {
   const [editingId, setEditingId] = useState(null);
   const [editText, setEditText] = useState("");
 
-  const [isCheckingUpdate, setIsCheckingUpdate] = useState(false);
+  const [isCheckingUpdate, setIsCheckingUpdate] =
+    useState(false);
 
   const timerRef = useRef(null);
   const audioContextRef = useRef(null);
@@ -233,9 +237,12 @@ export default function App() {
 
   const currentStage = STAGES[currentStageIndex];
 
-  const totalDuration = durations[currentStage.id] * 60;
+  const totalDuration =
+    durations[currentStage.id] * 60;
 
-  const progress = totalDuration ? timeLeft / totalDuration : 0;
+  const progress = totalDuration
+    ? timeLeft / totalDuration
+    : 0;
 
   useEffect(() => {
     localStorage.setItem(
@@ -255,18 +262,26 @@ export default function App() {
   }, [journalEntries]);
 
   useEffect(() => {
-    fetchLocalLectionary(setLoadingStatus).then(setTodayReading);
+    fetchLocalLectionary(setLoadingStatus).then(
+      setTodayReading
+    );
   }, []);
 
   useEffect(() => {
-    document.documentElement.dataset.theme = darkMode ? "dark" : "light";
+    document.documentElement.dataset.theme =
+      darkMode ? "dark" : "light";
+
     document.title = "Lectio Divina Timer";
   }, [darkMode]);
 
   const requestWakeLock = useCallback(async () => {
     try {
-      if ("wakeLock" in navigator && !wakeLockRef.current) {
-        wakeLockRef.current = await navigator.wakeLock.request("screen");
+      if (
+        "wakeLock" in navigator &&
+        !wakeLockRef.current
+      ) {
+        wakeLockRef.current =
+          await navigator.wakeLock.request("screen");
       }
     } catch {}
   }, []);
@@ -286,19 +301,32 @@ export default function App() {
     } else {
       releaseWakeLock();
     }
-  }, [isActive, requestWakeLock, releaseWakeLock]);
+  }, [
+    isActive,
+    requestWakeLock,
+    releaseWakeLock
+  ]);
 
   useEffect(() => {
     const onVisibility = () => {
-      if (document.visibilityState === "visible" && isActive) {
+      if (
+        document.visibilityState === "visible" &&
+        isActive
+      ) {
         requestWakeLock();
       }
     };
 
-    document.addEventListener("visibilitychange", onVisibility);
+    document.addEventListener(
+      "visibilitychange",
+      onVisibility
+    );
 
     return () => {
-      document.removeEventListener("visibilitychange", onVisibility);
+      document.removeEventListener(
+        "visibilitychange",
+        onVisibility
+      );
     };
   }, [isActive, requestWakeLock]);
 
@@ -309,17 +337,21 @@ export default function App() {
     }
 
     timerRef.current = setInterval(() => {
-      setTimeLeft((prev) => (prev <= 1 ? 0 : prev - 1));
+      setTimeLeft((prev) =>
+        prev <= 1 ? 0 : prev - 1
+      );
     }, 1000);
 
-    return () => clearInterval(timerRef.current);
+    return () =>
+      clearInterval(timerRef.current);
   }, [isActive]);
 
   const playBell = useCallback(() => {
     try {
       if (!audioContextRef.current) {
         audioContextRef.current = new (
-          window.AudioContext || window.webkitAudioContext
+          window.AudioContext ||
+          window.webkitAudioContext
         )();
       }
 
@@ -344,33 +376,51 @@ export default function App() {
         [2, 0.1, 2, 0],
         [3, 0.05, 1.5, 3],
         [4.2, 0.03, 1, -2]
-      ].forEach(([ratio, gain, decay, detune]) => {
-        const osc = ctx.createOscillator();
-        const g = ctx.createGain();
+      ].forEach(
+        ([ratio, gain, decay, detune]) => {
+          const osc = ctx.createOscillator();
+          const g = ctx.createGain();
 
-        osc.type = "sine";
+          osc.type = "sine";
 
-        osc.frequency.setValueAtTime(220 * ratio, now);
-        osc.detune.setValueAtTime(detune, now);
+          osc.frequency.setValueAtTime(
+            220 * ratio,
+            now
+          );
 
-        g.gain.setValueAtTime(0, now);
-        g.gain.linearRampToValueAtTime(gain, now + 0.02);
-        g.gain.exponentialRampToValueAtTime(
-          0.0001,
-          now + decay
-        );
+          osc.detune.setValueAtTime(
+            detune,
+            now
+          );
 
-        osc.connect(g);
-        g.connect(masterGain);
+          g.gain.setValueAtTime(0, now);
 
-        osc.start(now);
-        osc.stop(now + decay + 1);
-      });
+          g.gain.linearRampToValueAtTime(
+            gain,
+            now + 0.02
+          );
+
+          g.gain.exponentialRampToValueAtTime(
+            0.0001,
+            now + decay
+          );
+
+          osc.connect(g);
+          g.connect(masterGain);
+
+          osc.start(now);
+          osc.stop(now + decay + 1);
+        }
+      );
     } catch {}
   }, []);
 
   useEffect(() => {
-    if (timeLeft !== 0 || !isActive || stepLock.current) {
+    if (
+      timeLeft !== 0 ||
+      !isActive ||
+      stepLock.current
+    ) {
       return;
     }
 
@@ -378,11 +428,17 @@ export default function App() {
 
     playBell();
 
-    const nextIndex = currentStageIndex + 1;
+    const nextIndex =
+      currentStageIndex + 1;
 
     if (nextIndex < STAGES.length) {
       setCurrentStageIndex(nextIndex);
-      setTimeLeft(durations[STAGES[nextIndex].id] * 60);
+
+      setTimeLeft(
+        durations[
+          STAGES[nextIndex].id
+        ] * 60
+      );
 
       setTimeout(() => {
         stepLock.current = false;
@@ -403,11 +459,15 @@ export default function App() {
     if (!isActive) {
       if (!audioContextRef.current) {
         audioContextRef.current = new (
-          window.AudioContext || window.webkitAudioContext
+          window.AudioContext ||
+          window.webkitAudioContext
         )();
       }
 
-      if (audioContextRef.current.state === "suspended") {
+      if (
+        audioContextRef.current.state ===
+        "suspended"
+      ) {
         audioContextRef.current.resume();
       }
     }
@@ -417,12 +477,16 @@ export default function App() {
 
   const handleReset = () => {
     setIsActive(false);
+
     stepLock.current = false;
 
     clearInterval(timerRef.current);
 
     setCurrentStageIndex(0);
-    setTimeLeft(durations.statio * 60);
+
+    setTimeLeft(
+      durations.statio * 60
+    );
   };
 
   const handleSkip = () => {
@@ -432,10 +496,17 @@ export default function App() {
 
     playBell();
 
-    const nextIndex = (currentStageIndex + 1) % STAGES.length;
+    const nextIndex =
+      (currentStageIndex + 1) %
+      STAGES.length;
 
     setCurrentStageIndex(nextIndex);
-    setTimeLeft(durations[STAGES[nextIndex].id] * 60);
+
+    setTimeLeft(
+      durations[
+        STAGES[nextIndex].id
+      ] * 60
+    );
   };
 
   const saveJournal = () => {
@@ -452,20 +523,29 @@ export default function App() {
 
       date:
         todayReading?.dateFormatted ||
-        new Date().toLocaleDateString("en-US", {
-          month: "long",
-          day: "numeric",
-          year: "numeric"
-        }),
+        new Date().toLocaleDateString(
+          "en-US",
+          {
+            month: "long",
+            day: "numeric",
+            year: "numeric"
+          }
+        ),
 
-      reference: todayReading?.reference || "Journal Entry",
+      reference:
+        todayReading?.reference ||
+        "Journal Entry",
 
       text,
 
       createdAt: Date.now()
     };
 
-    setJournalEntries((prev) => [entry, ...prev]);
+    setJournalEntries((prev) => [
+      entry,
+      ...prev
+    ]);
+
     setNewEntryText("");
   };
 
@@ -505,9 +585,13 @@ export default function App() {
     return journalEntries
       .map(
         (entry, idx) =>
-          `[Entry ${journalEntries.length - idx}] Date: ${
+          `[Entry ${
+            journalEntries.length - idx
+          }] Date: ${
             entry.date
-          }\nReading: ${entry.reference}\nReflection:\n${
+          }\nReading: ${
+            entry.reference
+          }\nReflection:\n${
             entry.text
           }\n--------------------------------------------------\n`
       )
@@ -515,16 +599,25 @@ export default function App() {
   };
 
   const handleOpenExport = () => {
-    setExportedText(generateExportText());
+    setExportedText(
+      generateExportText()
+    );
+
     setCopyStatus(false);
+
     setShowExportModal(true);
   };
 
   const handleCopyExport = async () => {
     try {
-      await navigator.clipboard.writeText(exportedText);
+      await navigator.clipboard.writeText(
+        exportedText
+      );
     } catch {
-      const ta = document.createElement("textarea");
+      const ta =
+        document.createElement(
+          "textarea"
+        );
 
       ta.value = exportedText;
 
@@ -545,128 +638,146 @@ export default function App() {
   };
 
   /*
-   * APP UPDATE
+   * APP UPDATES
    *
-   * Checks the registered service worker for a newer version.
-   * If a new worker is found, it tells that worker to activate
-   * immediately and reloads the application.
+   * Checks for a newer service worker without
+   * interrupting the current application.
+   *
+   * IMPORTANT:
+   * - Never reloads the page.
+   * - Never calls SKIP_WAITING.
+   * - Never interrupts an active prayer session.
+   * - A downloaded update waits until the app is
+   *   naturally restarted before taking over.
    */
-  const handleCheckForUpdates = async () => {
-    if (isCheckingUpdate) {
-      return;
-    }
-
-    setIsCheckingUpdate(true);
-
-    try {
-      if (!("serviceWorker" in navigator)) {
-        alert("This browser does not support app updates.");
-        setIsCheckingUpdate(false);
+  const handleCheckForUpdates =
+    async () => {
+      if (isCheckingUpdate) {
         return;
       }
 
-      const registration =
-        await navigator.serviceWorker.getRegistration("./");
+      setIsCheckingUpdate(true);
 
-      if (!registration) {
-        alert("The app update service is not available.");
-        setIsCheckingUpdate(false);
-        return;
-      }
+      try {
+        if (
+          !("serviceWorker" in navigator)
+        ) {
+          alert(
+            "App updates are not supported by this browser."
+          );
 
-      await registration.update();
+          setIsCheckingUpdate(false);
+          return;
+        }
 
-      /*
-       * Give the browser a moment to finish the update check.
-       * This is especially useful on mobile browsers.
-       */
-      await new Promise((resolve) =>
-        setTimeout(resolve, 500)
-      );
+        const registration =
+          await navigator.serviceWorker.getRegistration();
 
-      /*
-       * A new service worker may already be waiting.
-       */
-      if (registration.waiting) {
-        registration.waiting.postMessage({
-          type: "SKIP_WAITING"
-        });
+        if (!registration) {
+          alert(
+            "The app update service is not available."
+          );
 
-        alert(
-          "A new version was found. Updating the app..."
-        );
+          setIsCheckingUpdate(false);
+          return;
+        }
 
-        setTimeout(() => {
-          window.location.reload();
-        }, 700);
+        /*
+         * Ask the browser to check the server
+         * for a newer service worker.
+         */
+        await registration.update();
 
-        return;
-      }
-
-      /*
-       * A new worker may still be installing.
-       */
-      if (registration.installing) {
-        const installingWorker =
-          registration.installing;
-
-        installingWorker.addEventListener(
-          "statechange",
-          () => {
-            if (
-              installingWorker.state === "installed"
-            ) {
-              if (registration.waiting) {
-                registration.waiting.postMessage({
-                  type: "SKIP_WAITING"
-                });
-
-                alert(
-                  "A new version was found. Updating the app..."
-                );
-
-                setTimeout(() => {
-                  window.location.reload();
-                }, 700);
-              } else {
-                setIsCheckingUpdate(false);
-
-                alert(
-                  "You're already using the latest version."
-                );
-              }
-            }
-          }
+        /*
+         * Give the browser a moment to discover
+         * and begin installing a new worker.
+         */
+        await new Promise((resolve) =>
+          setTimeout(resolve, 1000)
         );
 
         /*
-         * Don't immediately show the "latest version"
-         * message while installation is still happening.
+         * A new worker has finished installing
+         * and is waiting.
+         *
+         * DO NOT activate it.
+         * DO NOT reload.
          */
-        return;
+        if (registration.waiting) {
+          setIsCheckingUpdate(false);
+
+          alert(
+            "A new version of Lectio Divina is available. " +
+              "It will be applied the next time you restart the app."
+          );
+
+          return;
+        }
+
+        /*
+         * A new worker may still be installing.
+         */
+        if (registration.installing) {
+          const installingWorker =
+            registration.installing;
+
+          installingWorker.addEventListener(
+            "statechange",
+            () => {
+              if (
+                installingWorker.state ===
+                "installed"
+              ) {
+                setIsCheckingUpdate(false);
+
+                if (
+                  registration.waiting
+                ) {
+                  alert(
+                    "A new version of Lectio Divina is available. " +
+                      "It will be applied the next time you restart the app."
+                  );
+                } else {
+                  alert(
+                    "You're already using the latest version."
+                  );
+                }
+              }
+            },
+            { once: true }
+          );
+
+          return;
+        }
+
+        /*
+         * No waiting or installing worker means
+         * there is currently no newer version.
+         */
+        setIsCheckingUpdate(false);
+
+        alert(
+          "You're already using the latest version."
+        );
+      } catch (error) {
+        console.error(
+          "Update check failed:",
+          error
+        );
+
+        setIsCheckingUpdate(false);
+
+        alert(
+          "Unable to check for updates. Please try again."
+        );
       }
-
-      setIsCheckingUpdate(false);
-
-      alert(
-        "You're already using the latest version."
-      );
-    } catch (error) {
-      console.error(
-        "Update check failed:",
-        error
-      );
-
-      setIsCheckingUpdate(false);
-
-      alert(
-        "Unable to check for updates. Please try again."
-      );
-    }
-  };
+    };
 
   const formatTime = (seconds) => {
-    const m = Math.floor(seconds / 60);
+    const m = Math.floor(
+      seconds / 60
+    );
+
     const s = seconds % 60;
 
     return `${m}:${s < 10 ? "0" : ""}${s}`;
@@ -674,10 +785,14 @@ export default function App() {
 
   return (
     <div className="app-shell">
+
       <header className="header">
+
         <button
           className="icon-button"
-          onClick={() => setShowJournal(true)}
+          onClick={() =>
+            setShowJournal(true)
+          }
           title="Journal"
         >
           <IconPen size={20} />
@@ -688,6 +803,7 @@ export default function App() {
         </button>
 
         <div className="title-area">
+
           <h1>Lectio Divina</h1>
 
           <a
@@ -706,35 +822,50 @@ export default function App() {
 
             <IconExternalLink size={10} />
           </a>
+
         </div>
 
         <button
           className="icon-button"
-          onClick={() => setShowSettings(true)}
+          onClick={() =>
+            setShowSettings(true)
+          }
           title="Settings"
         >
           <IconSettings size={22} />
         </button>
+
       </header>
 
       <main className="main">
-        <section className="stage-heading">
-          <h2>{currentStage.name}</h2>
 
-          <p>{currentStage.description}</p>
+        <section className="stage-heading">
+
+          <h2>
+            {currentStage.name}
+          </h2>
+
+          <p>
+            {currentStage.description}
+          </p>
+
         </section>
 
         <button
           className="timer"
           onClick={toggleTimer}
           aria-label={
-            isActive ? "Pause timer" : "Start timer"
+            isActive
+              ? "Pause timer"
+              : "Start timer"
           }
         >
+
           <svg
             className="progress-ring"
             viewBox="0 0 256 256"
           >
+
             <circle
               cx="128"
               cy="128"
@@ -749,9 +880,11 @@ export default function App() {
               className="ring-progress"
               strokeDasharray="766"
               strokeDashoffset={
-                766 * (1 - progress)
+                766 *
+                (1 - progress)
               }
             />
+
           </svg>
 
           <span className="time">
@@ -765,55 +898,81 @@ export default function App() {
               <IconPlay size={18} />
             )}
           </span>
+
         </button>
 
         <div className="controls">
-          <button onClick={handleReset}>
+
+          <button
+            onClick={handleReset}
+          >
             <IconRotate size={18} />
             <span>Reset</span>
           </button>
 
-          <button onClick={handleSkip}>
+          <button
+            onClick={handleSkip}
+          >
             <IconChevron size={18} />
             <span>Skip</span>
           </button>
+
         </div>
+
       </main>
 
       <footer className="main-footer">
+
         <div className="stage-dots">
+
           {STAGES.map((_, i) => (
             <div
               key={i}
               className={`stage-dot ${
-                i === currentStageIndex
+                i ===
+                currentStageIndex
                   ? "active"
                   : ""
               }`}
             />
           ))}
+
         </div>
 
         <div className="copyright-notice">
-          © 2026 Lectio Divina · CC BY-NC Support:
+          © 2026 Lectio Divina · CC BY-NC
+          Support:
           octave.resolve.0g@icloud.com
         </div>
+
       </footer>
 
       {showJournal && (
         <div className="overlay full-screen">
+
           <div className="panel">
+
             <div className="panel-header">
+
               <div>
-                <h2>Prayer Journal</h2>
-                <p>Reflect on the Word</p>
+                <h2>
+                  Prayer Journal
+                </h2>
+
+                <p>
+                  Reflect on the Word
+                </p>
               </div>
 
               <div className="panel-actions">
-                {journalEntries.length > 0 && (
+
+                {journalEntries.length >
+                  0 && (
                   <button
                     className="outline-button"
-                    onClick={handleOpenExport}
+                    onClick={
+                      handleOpenExport
+                    }
                   >
                     Export All
                   </button>
@@ -827,11 +986,15 @@ export default function App() {
                 >
                   <IconX size={22} />
                 </button>
+
               </div>
+
             </div>
 
             <div className="scroll-area">
+
               <div className="entry-card new-entry">
+
                 <label>
                   New Entry •{" "}
                   {todayReading?.reference ||
@@ -850,16 +1013,21 @@ export default function App() {
                 />
 
                 <div className="right">
+
                   <button
                     className="primary-button"
                     disabled={
                       !newEntryText.trim()
                     }
-                    onClick={saveJournal}
+                    onClick={
+                      saveJournal
+                    }
                   >
                     Save Entry
                   </button>
+
                 </div>
+
               </div>
 
               <h3 className="section-label">
@@ -867,119 +1035,156 @@ export default function App() {
                 {journalEntries.length})
               </h3>
 
-              {journalEntries.length === 0 ? (
+              {journalEntries.length ===
+              0 ? (
                 <p className="empty">
-                  No journal entries saved yet.
+                  No journal entries
+                  saved yet.
                 </p>
               ) : (
-                journalEntries.map((entry) => (
-                  <div
-                    className="entry-card"
-                    key={entry.id}
-                  >
-                    <div className="entry-meta">
-                      <span>{entry.date}</span>
+                journalEntries.map(
+                  (entry) => (
+                    <div
+                      className="entry-card"
+                      key={entry.id}
+                    >
 
-                      <span>
-                        {entry.reference}
-                      </span>
+                      <div className="entry-meta">
 
-                      <span className="entry-tools">
-                        {editingId !== entry.id && (
-                          <>
+                        <span>
+                          {entry.date}
+                        </span>
+
+                        <span>
+                          {entry.reference}
+                        </span>
+
+                        <span className="entry-tools">
+
+                          {editingId !==
+                            entry.id && (
+                            <>
+                              <button
+                                onClick={() => {
+                                  setEditingId(
+                                    entry.id
+                                  );
+
+                                  setEditText(
+                                    entry.text
+                                  );
+                                }}
+                              >
+                                <IconEdit
+                                  size={14}
+                                />
+                              </button>
+
+                              <button
+                                onClick={() =>
+                                  deleteJournal(
+                                    entry.id
+                                  )
+                                }
+                              >
+                                <IconTrash
+                                  size={14}
+                                />
+                              </button>
+                            </>
+                          )}
+
+                        </span>
+
+                      </div>
+
+                      {editingId ===
+                      entry.id ? (
+                        <>
+                          <textarea
+                            rows="3"
+                            value={
+                              editText
+                            }
+                            onChange={(e) =>
+                              setEditText(
+                                e.target
+                                  .value
+                              )
+                            }
+                          />
+
+                          <div className="right gap">
+
                             <button
-                              onClick={() => {
+                              className="outline-button"
+                              onClick={() =>
                                 setEditingId(
-                                  entry.id
-                                );
-                                setEditText(
-                                  entry.text
-                                );
-                              }}
+                                  null
+                                )
+                              }
                             >
-                              <IconEdit size={14} />
+                              Cancel
                             </button>
 
                             <button
+                              className="primary-button"
                               onClick={() =>
-                                deleteJournal(
+                                updateJournal(
                                   entry.id
                                 )
                               }
                             >
-                              <IconTrash size={14} />
+                              Save
                             </button>
-                          </>
-                        )}
-                      </span>
+
+                          </div>
+                        </>
+                      ) : (
+                        <p className="reflection">
+                          {entry.text}
+                        </p>
+                      )}
+
                     </div>
-
-                    {editingId === entry.id ? (
-                      <>
-                        <textarea
-                          rows="3"
-                          value={editText}
-                          onChange={(e) =>
-                            setEditText(
-                              e.target.value
-                            )
-                          }
-                        />
-
-                        <div className="right gap">
-                          <button
-                            className="outline-button"
-                            onClick={() =>
-                              setEditingId(null)
-                            }
-                          >
-                            Cancel
-                          </button>
-
-                          <button
-                            className="primary-button"
-                            onClick={() =>
-                              updateJournal(
-                                entry.id
-                              )
-                            }
-                          >
-                            Save
-                          </button>
-                        </div>
-                      </>
-                    ) : (
-                      <p className="reflection">
-                        {entry.text}
-                      </p>
-                    )}
-                  </div>
-                ))
+                  )
+                )
               )}
+
             </div>
+
           </div>
+
         </div>
       )}
 
       {showExportModal && (
         <div className="overlay modal-overlay">
+
           <div className="modal">
+
             <div className="panel-header">
-              <h2>Export Journal Log</h2>
+
+              <h2>
+                Export Journal Log
+              </h2>
 
               <button
                 className="close-button"
                 onClick={() =>
-                  setShowExportModal(false)
+                  setShowExportModal(
+                    false
+                  )
                 }
               >
                 <IconX size={20} />
               </button>
+
             </div>
 
             <p className="muted">
-              Copy your complete prayer journal
-              history below:
+              Copy your complete prayer
+              journal history below:
             </p>
 
             <textarea
@@ -989,10 +1194,13 @@ export default function App() {
             />
 
             <div className="right gap">
+
               <button
                 className="outline-button"
                 onClick={() =>
-                  setShowExportModal(false)
+                  setShowExportModal(
+                    false
+                  )
                 }
               >
                 Close
@@ -1000,22 +1208,32 @@ export default function App() {
 
               <button
                 className="primary-button"
-                onClick={handleCopyExport}
+                onClick={
+                  handleCopyExport
+                }
               >
                 {copyStatus
                   ? "Copied to Clipboard!"
                   : "Copy All"}
               </button>
+
             </div>
+
           </div>
+
         </div>
       )}
 
       {showSettings && (
         <div className="overlay full-screen">
+
           <div className="panel settings-panel">
+
             <div className="panel-header">
-              <h2>Preferences</h2>
+
+              <h2>
+                Preferences
+              </h2>
 
               <button
                 className="outline-button"
@@ -1025,22 +1243,30 @@ export default function App() {
               >
                 Done
               </button>
+
             </div>
 
             <div className="scroll-area">
+
               <div className="setting-row">
-                <span>Dark Mode</span>
+
+                <span>
+                  Dark Mode
+                </span>
 
                 <button
                   className={`switch ${
                     darkMode ? "on" : ""
                   }`}
                   onClick={() =>
-                    setDarkMode((v) => !v)
+                    setDarkMode(
+                      (v) => !v
+                    )
                   }
                 >
                   <span />
                 </button>
+
               </div>
 
               <h3 className="section-label">
@@ -1048,7 +1274,9 @@ export default function App() {
               </h3>
 
               <div className="sync-card">
+
                 <div>
+
                   <strong>
                     Sync All Stages
                   </strong>
@@ -1056,24 +1284,31 @@ export default function App() {
                   <strong>
                     {durations.statio} min
                   </strong>
+
                 </div>
 
                 <input
                   type="range"
                   min="1"
                   max="30"
-                  value={durations.statio}
+                  value={
+                    durations.statio
+                  }
                   onChange={(e) => {
-                    const val = Number(
-                      e.target.value
-                    );
+
+                    const val =
+                      Number(
+                        e.target.value
+                      );
 
                     const next =
                       Object.fromEntries(
-                        STAGES.map((s) => [
-                          s.id,
-                          val
-                        ])
+                        STAGES.map(
+                          (s) => [
+                            s.id,
+                            val
+                          ]
+                        )
                       );
 
                     setDurations(next);
@@ -1083,62 +1318,92 @@ export default function App() {
                         val * 60
                       );
                     }
+
                   }}
                 />
+
               </div>
 
-              {STAGES.map((stage) => (
-                <div
-                  className="range-row"
-                  key={stage.id}
-                >
-                  <div>
-                    <span>{stage.name}</span>
+              {STAGES.map(
+                (stage) => (
+                  <div
+                    className="range-row"
+                    key={stage.id}
+                  >
 
-                    <strong>
-                      {durations[stage.id]} min
-                    </strong>
-                  </div>
+                    <div>
 
-                  <input
-                    type="range"
-                    min="1"
-                    max="30"
-                    value={durations[stage.id]}
-                    onChange={(e) => {
-                      const val = Number(
-                        e.target.value
-                      );
+                      <span>
+                        {stage.name}
+                      </span>
 
-                      setDurations((prev) => ({
-                        ...prev,
-                        [stage.id]: val
-                      }));
+                      <strong>
+                        {
+                          durations[
+                            stage.id
+                          ]
+                        }{" "}
+                        min
+                      </strong>
 
-                      if (
-                        stage.id ===
-                          currentStage.id &&
-                        !isActive
-                      ) {
-                        setTimeLeft(
-                          val * 60
-                        );
+                    </div>
+
+                    <input
+                      type="range"
+                      min="1"
+                      max="30"
+                      value={
+                        durations[
+                          stage.id
+                        ]
                       }
-                    }}
-                  />
-                </div>
-              ))}
+                      onChange={(e) => {
 
-              {/* APP UPDATES */}
+                        const val =
+                          Number(
+                            e.target
+                              .value
+                          );
+
+                        setDurations(
+                          (prev) => ({
+                            ...prev,
+                            [stage.id]:
+                              val
+                          })
+                        );
+
+                        if (
+                          stage.id ===
+                            currentStage.id &&
+                          !isActive
+                        ) {
+                          setTimeLeft(
+                            val * 60
+                          );
+                        }
+
+                      }}
+                    />
+
+                  </div>
+                )
+              )}
 
               <div className="update-card">
+
                 <div>
-                  <strong>App Updates</strong>
+
+                  <strong>
+                    App Updates
+                  </strong>
 
                   <span>
                     Check for the latest
-                    version of Lectio Divina.
+                    version of Lectio
+                    Divina.
                   </span>
+
                 </div>
 
                 <button
@@ -1146,23 +1411,28 @@ export default function App() {
                   onClick={
                     handleCheckForUpdates
                   }
-                  disabled={isCheckingUpdate}
+                  disabled={
+                    isCheckingUpdate
+                  }
                 >
                   {isCheckingUpdate
                     ? "Checking..."
                     : "Check for Updates"}
                 </button>
+
               </div>
 
-              {/* INSTALLATION INSTRUCTIONS */}
-
               <div className="install-card">
-                <h3>Install This App</h3>
+
+                <h3>
+                  Install This App
+                </h3>
 
                 <p>
-                  Add Lectio Divina to your
-                  home screen for a faster,
-                  app-like experience.
+                  Add Lectio Divina to
+                  your home screen for
+                  a faster, app-like
+                  experience.
                 </p>
 
                 <strong>
@@ -1179,7 +1449,9 @@ export default function App() {
                   .
                 </p>
 
-                <strong>Android</strong>
+                <strong>
+                  Android
+                </strong>
 
                 <p>
                   Tap the browser menu
@@ -1202,18 +1474,24 @@ export default function App() {
                     octave.resolve.0g@icloud.com
                   </b>
                 </p>
+
               </div>
 
               <p className="storage-note">
-                Your settings and journal are
-                stored only in this browser
-                using local storage. No Firebase
-                account or cloud database is used.
+                Your settings and journal
+                are stored only in this
+                browser using local storage.
+                No Firebase account or cloud
+                database is used.
               </p>
+
             </div>
+
           </div>
+
         </div>
       )}
+
     </div>
   );
 }
