@@ -448,30 +448,43 @@ const toggleTimer = () => {
     <span>Check for the latest version of Lectio Divina.</span>
   </div>
 
-  <button
-    className="outline-button"
-    onClick={async () => {
-      try {
-        if ("serviceWorker" in navigator) {
-          const registration = await navigator.serviceWorker.getRegistration();
-
-          if (registration) {
-            await registration.update();
-
-            if (registration.waiting) {
-              registration.waiting.postMessage({ type: "SKIP_WAITING" });
-            }
-          }
-        }
-
-        window.location.reload();
-      } catch {
-        window.location.reload();
+<button
+  className="outline-button"
+  onClick={async () => {
+    try {
+      if (!("serviceWorker" in navigator)) {
+        alert("This browser does not support app updates.");
+        return;
       }
-    }}
-  >
-    Check for Updates
-  </button>
+
+      const registration = await navigator.serviceWorker.getRegistration();
+
+      if (!registration) {
+        alert("The app update service is not available.");
+        return;
+      }
+
+      await registration.update();
+
+      if (registration.waiting) {
+        registration.waiting.postMessage({ type: "SKIP_WAITING" });
+
+        setTimeout(() => {
+          window.location.reload();
+        }, 500);
+
+        return;
+      }
+
+      alert("You're already using the latest version.");
+    } catch (error) {
+      console.error("Update check failed:", error);
+      alert("Unable to check for updates. Please try again.");
+    }
+  }}
+>
+  Check for Updates
+</button>
 </div>
               
 <div className="install-card">
