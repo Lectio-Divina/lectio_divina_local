@@ -351,7 +351,6 @@ const toggleTimer = () => {
   </div>
 
   <div className="copyright-notice">
-    © 2026 Lectio Divina · CC BY-NC Support: octave.resolve.0g@icloud.com
   </div>
 </footer>
 
