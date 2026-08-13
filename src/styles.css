@@ -136,11 +136,6 @@ input[type="range"] { width:100%; accent-color:#78716c; margin-top:10px; }
     padding-left: 18px;
   }
   
-  /.header {
- /   height: 64px;
- /   flex-basis: 64px;
- / }
-
   .main {
     
     align-items: center;
@@ -149,14 +144,6 @@ input[type="range"] { width:100%; accent-color:#78716c; margin-top:10px; }
     flex: 1 1 auto;
     overflow: hidden;
   }
-  
-  
-  / .stage-heading {
-  /  margin-bottom: 10px;
-  /  height: 40px;
-  /  flex-basis: 40px;
-    
-  /}
 
   .stage-heading h2 {
     font-size: 28px;
@@ -235,4 +222,102 @@ input[type="range"] { width:100%; accent-color:#78716c; margin-top:10px; }
     font-family: Georgia, serif;
     font-size: 18px;
   }
+}
+
+
+
+/* =========================================
+   DESKTOP LAYOUT
+   ========================================= */
+
+@media (min-width: 700px) {
+
+  .app-shell {
+    max-width: 900px;
+    min-height: 100vh;
+    padding: 28px 48px 24px;
+  }
+
+  .header {
+    height: 100px;
+    flex-basis: 100px;
+  }
+
+  .title-area {
+    transform: translateY(8px);
+  }
+
+  .title-area h1 {
+    font-size: 28px;
+  }
+
+  .reading-link {
+    font-size: 14px;
+  }
+
+  .main {
+    justify-content: space-evenly;
+    padding: 20px 0;
+  }
+
+  .stage-heading {
+    transform: none;
+    height: 80px;
+  }
+
+  .stage-heading h2 {
+    font-size: 32px;
+  }
+
+  .stage-heading p {
+    font-size: 13px;
+  }
+
+  .timer {
+    width: 280px;
+    height: 280px;
+    flex-basis: 280px;
+  }
+
+  .time {
+    font-size: 68px;
+  }
+
+  .controls {
+    gap: 80px;
+  }
+
+  .stage-dots {
+    height: 50px;
+  }
+}
+
+.main-footer {
+  flex: 0 0 auto;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.main-footer .stage-dots {
+  height: 40px;
+  flex: 0 0 40px;
+}
+
+.copyright-notice {
+  margin: 0 0 2px;
+  padding: 0;
+  font-size: 7px;
+  line-height: 10px;
+  font-weight: 400;
+  letter-spacing: .06em;
+  color: #d6d3d1;
+  opacity: .55;
+  text-align: center;
+  white-space: nowrap;
+}
+
+:root[data-theme="dark"] .copyright-notice {
+  color: #57534e;
 }
