@@ -1,4 +1,4 @@
-const CACHE_NAME = "lectio-divina-v2";
+const CACHE_NAME = "lectio-divina-v3";
 
 const APP_SHELL = [
   "./",
