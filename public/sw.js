@@ -17,8 +17,8 @@ self.addEventListener("install", (event) => {
     })
   );
 
-  // Allow the new service worker to move into the waiting state.
-  self.skipWaiting();
+  // Do NOT call skipWaiting() here.
+  // This allows the current app session to continue uninterrupted.
 });
 
 self.addEventListener("activate", (event) => {
@@ -32,11 +32,9 @@ self.addEventListener("activate", (event) => {
     })
   );
 
-  // Take control of the current app immediately.
   self.clients.claim();
 });
 
-// Listen for the "update now" message from App.jsx
 self.addEventListener("message", (event) => {
   if (event.data && event.data.type === "SKIP_WAITING") {
     self.skipWaiting();
