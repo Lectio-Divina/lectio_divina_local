@@ -442,6 +442,38 @@ const toggleTimer = () => {
                   if (stage.id === currentStage.id && !isActive) setTimeLeft(val * 60);
                 }}/>
               </div>)}
+<div className="update-card">
+  <div>
+    <strong>App Updates</strong>
+    <span>Check for the latest version of Lectio Divina.</span>
+  </div>
+
+  <button
+    className="outline-button"
+    onClick={async () => {
+      try {
+        if ("serviceWorker" in navigator) {
+          const registration = await navigator.serviceWorker.getRegistration();
+
+          if (registration) {
+            await registration.update();
+
+            if (registration.waiting) {
+              registration.waiting.postMessage({ type: "SKIP_WAITING" });
+            }
+          }
+        }
+
+        window.location.reload();
+      } catch {
+        window.location.reload();
+      }
+    }}
+  >
+    Check for Updates
+  </button>
+</div>
+              
 <div className="install-card">
   <h3>Install This App</h3>
 
