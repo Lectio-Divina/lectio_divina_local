@@ -1,4 +1,4 @@
-const CACHE_NAME = "lectio-divina-v1";
+const CACHE_NAME = "lectio-divina-v2";
 
 const APP_SHELL = [
   "./",
@@ -39,6 +39,39 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
+  const url = new URL(event.request.url);
+
+  /*
+   * Always check the network first for Daily_Gospel.txt.
+   * If the device is offline, use the cached copy.
+   */
+  if (url.pathname.endsWith("/Daily_Gospel.txt")) {
+    event.respondWith(
+      fetch(event.request)
+        .then((networkResponse) => {
+          if (networkResponse && networkResponse.ok) {
+            const responseClone = networkResponse.clone();
+
+            caches.open(CACHE_NAME).then((cache) => {
+              cache.put(event.request, responseClone);
+            });
+          }
+
+          return networkResponse;
+        })
+        .catch(() => {
+          return caches.match(event.request);
+        })
+    );
+
+    return;
+  }
+
+  /*
+   * All other files use the cache first.
+   * If the file isn't cached, fetch it from the network
+   * and save a copy for offline use.
+   */
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {
       if (cachedResponse) {
