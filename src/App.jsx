@@ -216,8 +216,9 @@ export default function App() {
     Boolean(savedSettings.darkMode)
   );
   const [todayReading, setTodayReading] = useState(null);
-  const [loadingStatus, setLoadingStatus] =
-    useState("Initializing...");
+  const [loadingStatus, setLoadingStatus] = useState(
+    "Initializing..."
+  );
 
   const [journalEntries, setJournalEntries] = useState(() =>
     readStorage(STORAGE_KEYS.journal, [])
@@ -227,9 +228,6 @@ export default function App() {
   const [editingId, setEditingId] = useState(null);
   const [editText, setEditText] = useState("");
 
-  const [isCheckingUpdate, setIsCheckingUpdate] =
-    useState(false);
-
   const timerRef = useRef(null);
   const audioContextRef = useRef(null);
   const stepLock = useRef(false);
@@ -237,8 +235,7 @@ export default function App() {
 
   const currentStage = STAGES[currentStageIndex];
 
-  const totalDuration =
-    durations[currentStage.id] * 60;
+  const totalDuration = durations[currentStage.id] * 60;
 
   const progress = totalDuration
     ? timeLeft / totalDuration
@@ -268,8 +265,9 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    document.documentElement.dataset.theme =
-      darkMode ? "dark" : "light";
+    document.documentElement.dataset.theme = darkMode
+      ? "dark"
+      : "light";
 
     document.title = "Lectio Divina Timer";
   }, [darkMode]);
@@ -300,6 +298,17 @@ export default function App() {
       requestWakeLock();
     } else {
       releaseWakeLock();
+
+      /*
+       * If an automatic app update is waiting,
+       * it is safe to activate it when the prayer
+       * timer is not running.
+       */
+      if (
+        window.__lectioDivinaActivateUpdate
+      ) {
+        window.__lectioDivinaActivateUpdate();
+      }
     }
   }, [
     isActive,
@@ -378,7 +387,9 @@ export default function App() {
         [4.2, 0.03, 1, -2]
       ].forEach(
         ([ratio, gain, decay, detune]) => {
-          const osc = ctx.createOscillator();
+          const osc =
+            ctx.createOscillator();
+
           const g = ctx.createGain();
 
           osc.type = "sine";
@@ -435,9 +446,7 @@ export default function App() {
       setCurrentStageIndex(nextIndex);
 
       setTimeLeft(
-        durations[
-          STAGES[nextIndex].id
-        ] * 60
+        durations[STAGES[nextIndex].id] * 60
       );
 
       setTimeout(() => {
@@ -477,16 +486,12 @@ export default function App() {
 
   const handleReset = () => {
     setIsActive(false);
-
     stepLock.current = false;
 
     clearInterval(timerRef.current);
 
     setCurrentStageIndex(0);
-
-    setTimeLeft(
-      durations.statio * 60
-    );
+    setTimeLeft(durations.statio * 60);
   };
 
   const handleSkip = () => {
@@ -503,9 +508,7 @@ export default function App() {
     setCurrentStageIndex(nextIndex);
 
     setTimeLeft(
-      durations[
-        STAGES[nextIndex].id
-      ] * 60
+      durations[STAGES[nextIndex].id] * 60
     );
   };
 
@@ -517,9 +520,10 @@ export default function App() {
     }
 
     const entry = {
-      id: crypto.randomUUID
-        ? crypto.randomUUID()
-        : `${Date.now()}-${Math.random()}`,
+      id:
+        crypto.randomUUID
+          ? crypto.randomUUID()
+          : `${Date.now()}-${Math.random()}`,
 
       date:
         todayReading?.dateFormatted ||
@@ -587,13 +591,12 @@ export default function App() {
         (entry, idx) =>
           `[Entry ${
             journalEntries.length - idx
-          }] Date: ${
-            entry.date
-          }\nReading: ${
-            entry.reference
-          }\nReflection:\n${
-            entry.text
-          }\n--------------------------------------------------\n`
+          }] Date: ${entry.date}
+Reading: ${entry.reference}
+Reflection:
+${entry.text}
+--------------------------------------------------
+`
       )
       .join("\n");
   };
@@ -604,7 +607,6 @@ export default function App() {
     );
 
     setCopyStatus(false);
-
     setShowExportModal(true);
   };
 
@@ -615,9 +617,7 @@ export default function App() {
       );
     } catch {
       const ta =
-        document.createElement(
-          "textarea"
-        );
+        document.createElement("textarea");
 
       ta.value = exportedText;
 
@@ -637,147 +637,8 @@ export default function App() {
     }, 3000);
   };
 
-  /*
-   * APP UPDATES
-   *
-   * Checks for a newer service worker without
-   * interrupting the current application.
-   *
-   * IMPORTANT:
-   * - Never reloads the page.
-   * - Never calls SKIP_WAITING.
-   * - Never interrupts an active prayer session.
-   * - A downloaded update waits until the app is
-   *   naturally restarted before taking over.
-   */
-  const handleCheckForUpdates =
-    async () => {
-      if (isCheckingUpdate) {
-        return;
-      }
-
-      setIsCheckingUpdate(true);
-
-      try {
-        if (
-          !("serviceWorker" in navigator)
-        ) {
-          alert(
-            "App updates are not supported by this browser."
-          );
-
-          setIsCheckingUpdate(false);
-          return;
-        }
-
-        const registration =
-          await navigator.serviceWorker.getRegistration();
-
-        if (!registration) {
-          alert(
-            "The app update service is not available."
-          );
-
-          setIsCheckingUpdate(false);
-          return;
-        }
-
-        /*
-         * Ask the browser to check the server
-         * for a newer service worker.
-         */
-        await registration.update();
-
-        /*
-         * Give the browser a moment to discover
-         * and begin installing a new worker.
-         */
-        await new Promise((resolve) =>
-          setTimeout(resolve, 1000)
-        );
-
-        /*
-         * A new worker has finished installing
-         * and is waiting.
-         *
-         * DO NOT activate it.
-         * DO NOT reload.
-         */
-        if (registration.waiting) {
-          setIsCheckingUpdate(false);
-
-          alert(
-            "A new version of Lectio Divina is available. " +
-              "It will be applied the next time you restart the app."
-          );
-
-          return;
-        }
-
-        /*
-         * A new worker may still be installing.
-         */
-        if (registration.installing) {
-          const installingWorker =
-            registration.installing;
-
-          installingWorker.addEventListener(
-            "statechange",
-            () => {
-              if (
-                installingWorker.state ===
-                "installed"
-              ) {
-                setIsCheckingUpdate(false);
-
-                if (
-                  registration.waiting
-                ) {
-                  alert(
-                    "A new version of Lectio Divina is available. " +
-                      "It will be applied the next time you restart the app."
-                  );
-                } else {
-                  alert(
-                    "You're already using the latest version."
-                  );
-                }
-              }
-            },
-            { once: true }
-          );
-
-          return;
-        }
-
-        /*
-         * No waiting or installing worker means
-         * there is currently no newer version.
-         */
-        setIsCheckingUpdate(false);
-
-        alert(
-          "You're already using the latest version."
-        );
-      } catch (error) {
-        console.error(
-          "Update check failed:",
-          error
-        );
-
-        setIsCheckingUpdate(false);
-
-        alert(
-          "Unable to check for updates. Please try again."
-        );
-      }
-    };
-
   const formatTime = (seconds) => {
-    const m = Math.floor(
-      seconds / 60
-    );
-
+    const m = Math.floor(seconds / 60);
     const s = seconds % 60;
 
     return `${m}:${s < 10 ? "0" : ""}${s}`;
@@ -785,9 +646,7 @@ export default function App() {
 
   return (
     <div className="app-shell">
-
       <header className="header">
-
         <button
           className="icon-button"
           onClick={() =>
@@ -803,7 +662,6 @@ export default function App() {
         </button>
 
         <div className="title-area">
-
           <h1>Lectio Divina</h1>
 
           <a
@@ -822,7 +680,6 @@ export default function App() {
 
             <IconExternalLink size={10} />
           </a>
-
         </div>
 
         <button
@@ -834,21 +691,15 @@ export default function App() {
         >
           <IconSettings size={22} />
         </button>
-
       </header>
 
       <main className="main">
-
         <section className="stage-heading">
-
-          <h2>
-            {currentStage.name}
-          </h2>
+          <h2>{currentStage.name}</h2>
 
           <p>
             {currentStage.description}
           </p>
-
         </section>
 
         <button
@@ -860,12 +711,10 @@ export default function App() {
               : "Start timer"
           }
         >
-
           <svg
             className="progress-ring"
             viewBox="0 0 256 256"
           >
-
             <circle
               cx="128"
               cy="128"
@@ -880,11 +729,9 @@ export default function App() {
               className="ring-progress"
               strokeDasharray="766"
               strokeDashoffset={
-                766 *
-                (1 - progress)
+                766 * (1 - progress)
               }
             />
-
           </svg>
 
           <span className="time">
@@ -898,81 +745,55 @@ export default function App() {
               <IconPlay size={18} />
             )}
           </span>
-
         </button>
 
         <div className="controls">
-
-          <button
-            onClick={handleReset}
-          >
+          <button onClick={handleReset}>
             <IconRotate size={18} />
             <span>Reset</span>
           </button>
 
-          <button
-            onClick={handleSkip}
-          >
+          <button onClick={handleSkip}>
             <IconChevron size={18} />
             <span>Skip</span>
           </button>
-
         </div>
-
       </main>
 
       <footer className="main-footer">
-
         <div className="stage-dots">
-
           {STAGES.map((_, i) => (
             <div
               key={i}
               className={`stage-dot ${
-                i ===
-                currentStageIndex
+                i === currentStageIndex
                   ? "active"
                   : ""
               }`}
             />
           ))}
-
         </div>
 
         <div className="copyright-notice">
           © 2026 Lectio Divina · CC BY-NC
-          Support:
-          octave.resolve.0g@icloud.com
+          Support: octave.resolve.0g@icloud.com
         </div>
-
       </footer>
 
       {showJournal && (
         <div className="overlay full-screen">
-
           <div className="panel">
-
             <div className="panel-header">
-
               <div>
-                <h2>
-                  Prayer Journal
-                </h2>
-
-                <p>
-                  Reflect on the Word
-                </p>
+                <h2>Prayer Journal</h2>
+                <p>Reflect on the Word</p>
               </div>
 
               <div className="panel-actions">
-
-                {journalEntries.length >
-                  0 && (
+                {journalEntries.length > 0 && (
                   <button
                     className="outline-button"
-                    onClick={
-                      handleOpenExport
-                    }
+                    onClick={handleOpenExport}
                   >
                     Export All
                   </button>
@@ -986,15 +807,11 @@ export default function App() {
                 >
                   <IconX size={22} />
                 </button>
-
               </div>
-
             </div>
 
             <div className="scroll-area">
-
               <div className="entry-card new-entry">
-
                 <label>
                   New Entry •{" "}
                   {todayReading?.reference ||
@@ -1013,21 +830,16 @@ export default function App() {
                 />
 
                 <div className="right">
-
                   <button
                     className="primary-button"
                     disabled={
                       !newEntryText.trim()
                     }
-                    onClick={
-                      saveJournal
-                    }
+                    onClick={saveJournal}
                   >
                     Save Entry
                   </button>
-
                 </div>
-
               </div>
 
               <h3 className="section-label">
@@ -1035,151 +847,125 @@ export default function App() {
                 {journalEntries.length})
               </h3>
 
-              {journalEntries.length ===
-              0 ? (
+              {journalEntries.length === 0 ? (
                 <p className="empty">
-                  No journal entries
-                  saved yet.
+                  No journal entries saved yet.
                 </p>
               ) : (
-                journalEntries.map(
-                  (entry) => (
-                    <div
-                      className="entry-card"
-                      key={entry.id}
-                    >
+                journalEntries.map((entry) => (
+                  <div
+                    className="entry-card"
+                    key={entry.id}
+                  >
+                    <div className="entry-meta">
+                      <span>
+                        {entry.date}
+                      </span>
 
-                      <div className="entry-meta">
+                      <span>
+                        {entry.reference}
+                      </span>
 
-                        <span>
-                          {entry.date}
-                        </span>
-
-                        <span>
-                          {entry.reference}
-                        </span>
-
-                        <span className="entry-tools">
-
-                          {editingId !==
-                            entry.id && (
-                            <>
-                              <button
-                                onClick={() => {
-                                  setEditingId(
-                                    entry.id
-                                  );
-
-                                  setEditText(
-                                    entry.text
-                                  );
-                                }}
-                              >
-                                <IconEdit
-                                  size={14}
-                                />
-                              </button>
-
-                              <button
-                                onClick={() =>
-                                  deleteJournal(
-                                    entry.id
-                                  )
-                                }
-                              >
-                                <IconTrash
-                                  size={14}
-                                />
-                              </button>
-                            </>
-                          )}
-
-                        </span>
-
-                      </div>
-
-                      {editingId ===
-                      entry.id ? (
-                        <>
-                          <textarea
-                            rows="3"
-                            value={
-                              editText
-                            }
-                            onChange={(e) =>
-                              setEditText(
-                                e.target
-                                  .value
-                              )
-                            }
-                          />
-
-                          <div className="right gap">
-
+                      <span className="entry-tools">
+                        {editingId !==
+                          entry.id && (
+                          <>
                             <button
-                              className="outline-button"
-                              onClick={() =>
+                              onClick={() => {
                                 setEditingId(
-                                  null
-                                )
-                              }
+                                  entry.id
+                                );
+
+                                setEditText(
+                                  entry.text
+                                );
+                              }}
                             >
-                              Cancel
+                              <IconEdit
+                                size={14}
+                              />
                             </button>
 
                             <button
-                              className="primary-button"
                               onClick={() =>
-                                updateJournal(
+                                deleteJournal(
                                   entry.id
                                 )
                               }
                             >
-                              Save
+                              <IconTrash
+                                size={14}
+                              />
                             </button>
-
-                          </div>
-                        </>
-                      ) : (
-                        <p className="reflection">
-                          {entry.text}
-                        </p>
-                      )}
-
+                          </>
+                        )}
+                      </span>
                     </div>
-                  )
-                )
+
+                    {editingId ===
+                    entry.id ? (
+                      <>
+                        <textarea
+                          rows="3"
+                          value={editText}
+                          onChange={(e) =>
+                            setEditText(
+                              e.target.value
+                            )
+                          }
+                        />
+
+                        <div className="right gap">
+                          <button
+                            className="outline-button"
+                            onClick={() =>
+                              setEditingId(
+                                null
+                              )
+                            }
+                          >
+                            Cancel
+                          </button>
+
+                          <button
+                            className="primary-button"
+                            onClick={() =>
+                              updateJournal(
+                                entry.id
+                              )
+                            }
+                          >
+                            Save
+                          </button>
+                        </div>
+                      </>
+                    ) : (
+                      <p className="reflection">
+                        {entry.text}
+                      </p>
+                    )}
+                  </div>
+                ))
               )}
-
             </div>
-
           </div>
-
         </div>
       )}
 
       {showExportModal && (
         <div className="overlay modal-overlay">
-
           <div className="modal">
-
             <div className="panel-header">
-
-              <h2>
-                Export Journal Log
-              </h2>
+              <h2>Export Journal Log</h2>
 
               <button
                 className="close-button"
                 onClick={() =>
-                  setShowExportModal(
-                    false
-                  )
+                  setShowExportModal(false)
                 }
               >
                 <IconX size={20} />
               </button>
-
             </div>
 
             <p className="muted">
@@ -1194,13 +980,10 @@ export default function App() {
             />
 
             <div className="right gap">
-
               <button
                 className="outline-button"
                 onClick={() =>
-                  setShowExportModal(
-                    false
-                  )
+                  setShowExportModal(false)
                 }
               >
                 Close
@@ -1208,32 +991,22 @@ export default function App() {
 
               <button
                 className="primary-button"
-                onClick={
-                  handleCopyExport
-                }
+                onClick={handleCopyExport}
               >
                 {copyStatus
                   ? "Copied to Clipboard!"
                   : "Copy All"}
               </button>
-
             </div>
-
           </div>
-
         </div>
       )}
 
       {showSettings && (
         <div className="overlay full-screen">
-
           <div className="panel settings-panel">
-
             <div className="panel-header">
-
-              <h2>
-                Preferences
-              </h2>
+              <h2>Preferences</h2>
 
               <button
                 className="outline-button"
@@ -1243,30 +1016,22 @@ export default function App() {
               >
                 Done
               </button>
-
             </div>
 
             <div className="scroll-area">
-
               <div className="setting-row">
-
-                <span>
-                  Dark Mode
-                </span>
+                <span>Dark Mode</span>
 
                 <button
                   className={`switch ${
                     darkMode ? "on" : ""
                   }`}
                   onClick={() =>
-                    setDarkMode(
-                      (v) => !v
-                    )
+                    setDarkMode((v) => !v)
                   }
                 >
                   <span />
                 </button>
-
               </div>
 
               <h3 className="section-label">
@@ -1274,9 +1039,7 @@ export default function App() {
               </h3>
 
               <div className="sync-card">
-
                 <div>
-
                   <strong>
                     Sync All Stages
                   </strong>
@@ -1284,31 +1047,24 @@ export default function App() {
                   <strong>
                     {durations.statio} min
                   </strong>
-
                 </div>
 
                 <input
                   type="range"
                   min="1"
                   max="30"
-                  value={
-                    durations.statio
-                  }
+                  value={durations.statio}
                   onChange={(e) => {
-
-                    const val =
-                      Number(
-                        e.target.value
-                      );
+                    const val = Number(
+                      e.target.value
+                    );
 
                     const next =
                       Object.fromEntries(
-                        STAGES.map(
-                          (s) => [
-                            s.id,
-                            val
-                          ]
-                        )
+                        STAGES.map((s) => [
+                          s.id,
+                          val
+                        ])
                       );
 
                     setDurations(next);
@@ -1318,121 +1074,63 @@ export default function App() {
                         val * 60
                       );
                     }
-
                   }}
                 />
-
               </div>
 
-              {STAGES.map(
-                (stage) => (
-                  <div
-                    className="range-row"
-                    key={stage.id}
-                  >
-
-                    <div>
-
-                      <span>
-                        {stage.name}
-                      </span>
-
-                      <strong>
-                        {
-                          durations[
-                            stage.id
-                          ]
-                        }{" "}
-                        min
-                      </strong>
-
-                    </div>
-
-                    <input
-                      type="range"
-                      min="1"
-                      max="30"
-                      value={
-                        durations[
-                          stage.id
-                        ]
-                      }
-                      onChange={(e) => {
-
-                        const val =
-                          Number(
-                            e.target
-                              .value
-                          );
-
-                        setDurations(
-                          (prev) => ({
-                            ...prev,
-                            [stage.id]:
-                              val
-                          })
-                        );
-
-                        if (
-                          stage.id ===
-                            currentStage.id &&
-                          !isActive
-                        ) {
-                          setTimeLeft(
-                            val * 60
-                          );
-                        }
-
-                      }}
-                    />
-
-                  </div>
-                )
-              )}
-
-              <div className="update-card">
-
-                <div>
-
-                  <strong>
-                    App Updates
-                  </strong>
-
-                  <span>
-                    Check for the latest
-                    version of Lectio
-                    Divina.
-                  </span>
-
-                </div>
-
-                <button
-                  className="outline-button"
-                  onClick={
-                    handleCheckForUpdates
-                  }
-                  disabled={
-                    isCheckingUpdate
-                  }
+              {STAGES.map((stage) => (
+                <div
+                  className="range-row"
+                  key={stage.id}
                 >
-                  {isCheckingUpdate
-                    ? "Checking..."
-                    : "Check for Updates"}
-                </button>
+                  <div>
+                    <span>
+                      {stage.name}
+                    </span>
 
-              </div>
+                    <strong>
+                      {durations[stage.id]} min
+                    </strong>
+                  </div>
+
+                  <input
+                    type="range"
+                    min="1"
+                    max="30"
+                    value={
+                      durations[stage.id]
+                    }
+                    onChange={(e) => {
+                      const val = Number(
+                        e.target.value
+                      );
+
+                      setDurations((prev) => ({
+                        ...prev,
+                        [stage.id]: val
+                      }));
+
+                      if (
+                        stage.id ===
+                          currentStage.id &&
+                        !isActive
+                      ) {
+                        setTimeLeft(
+                          val * 60
+                        );
+                      }
+                    }}
+                  />
+                </div>
+              ))}
 
               <div className="install-card">
-
-                <h3>
-                  Install This App
-                </h3>
+                <h3>Install This App</h3>
 
                 <p>
-                  Add Lectio Divina to
-                  your home screen for
-                  a faster, app-like
-                  experience.
+                  Add Lectio Divina to your
+                  home screen for a faster,
+                  app-like experience.
                 </p>
 
                 <strong>
@@ -1449,9 +1147,7 @@ export default function App() {
                   .
                 </p>
 
-                <strong>
-                  Android
-                </strong>
+                <strong>Android</strong>
 
                 <p>
                   Tap the browser menu
@@ -1474,24 +1170,18 @@ export default function App() {
                     octave.resolve.0g@icloud.com
                   </b>
                 </p>
-
               </div>
 
               <p className="storage-note">
-                Your settings and journal
-                are stored only in this
-                browser using local storage.
-                No Firebase account or cloud
-                database is used.
+                Your settings and journal are
+                stored only in this browser
+                using local storage. No Firebase
+                account or cloud database is used.
               </p>
-
             </div>
-
           </div>
-
         </div>
       )}
-
     </div>
   );
 }
