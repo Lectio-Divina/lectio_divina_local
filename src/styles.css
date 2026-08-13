@@ -321,3 +321,47 @@ input[type="range"] { width:100%; accent-color:#78716c; margin-top:10px; }
 :root[data-theme="dark"] .copyright-notice {
   color: #57534e;
 }
+.update-card {
+  margin-top: 24px;
+  padding: 16px;
+  border: 1px solid #e7e5e4;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.update-card > div {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.update-card strong {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .18em;
+}
+
+.update-card span {
+  font-size: 11px;
+  line-height: 1.4;
+  opacity: .55;
+}
+
+:root[data-theme="dark"] .update-card {
+  border-color: #44403c;
+  background: #292524;
+}
+
+@media (max-width: 480px) {
+  .update-card {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .update-card .outline-button {
+    align-self: flex-start;
+  }
+}
